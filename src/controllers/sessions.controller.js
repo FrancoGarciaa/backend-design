@@ -6,26 +6,28 @@ const JWT_SECRET = "secretJWT123";
 const JWT_EXPIRES = "1d"; 
 
 export const registerUser = async (req, res) => {
-try {
+    try {
     const { first_name, last_name, email, age, password } = req.body;
 
     const exist = await UserModel.findOne({ email });
     if (exist) return res.status(400).json({ message: "El usuario ya existe" });
 
+    const hashedPassword = createHash(password);
+
     const newUser = new UserModel({
-    first_name,
-    last_name,
-    email,
-    age,
-    password 
+        first_name,
+        last_name,
+        email,
+        age,
+        password: hashedPassword
     });
 
     await newUser.save();
 
     res.status(201).json({ message: "Registro exitoso :D" });
-} catch (err) {
+    } catch (err) {
     res.status(500).json({ message: "Error interno", error: err.message });
-}
+    }
 };
 
 export const loginUser = async (req, res) => {
