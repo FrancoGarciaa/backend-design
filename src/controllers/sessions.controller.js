@@ -1,25 +1,26 @@
 import jwt from "jsonwebtoken";
 import UserModel from "../models/user.model.js";
-import { createHash, isValidPassword } from "../utils/bcrypt.js";
+import { isValidPassword } from "../utils/bcrypt.js";
 
 const JWT_SECRET = "secretJWT123";
 const JWT_EXPIRES = "1d"; 
 
 export const registerUser = async (req, res) => {
     try {
+
+        console.log("usuraio registrado: ", req.body);
+
     const { first_name, last_name, email, age, password } = req.body;
 
     const exist = await UserModel.findOne({ email });
     if (exist) return res.status(400).json({ message: "El usuario ya existe" });
-
-    const hashedPassword = createHash(password);
 
     const newUser = new UserModel({
         first_name,
         last_name,
         email,
         age,
-        password: hashedPassword
+        password
     });
 
     await newUser.save();
@@ -31,6 +32,7 @@ export const registerUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
+
 try {
     const { email, password } = req.body;
 
