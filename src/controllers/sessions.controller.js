@@ -1,9 +1,14 @@
 import jwt from "jsonwebtoken";
-import UserModel from "../models/user.model.js";
+import UserModel from "../models/users.model.js";
 import { isValidPassword } from "../utils/bcrypt.js";
+import UserDTO from "../dao/dto/user.dto.js";
+import dotenv from "dotenv";
 
-const JWT_SECRET = "secretJWT123";
-const JWT_EXPIRES = "1d"; 
+
+dotenv.config();
+
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_EXPIRES = process.env.JWT_EXPIRES;
 
 export const registerUser = async (req, res) => {
     try {
@@ -37,42 +42,40 @@ try {
     const { email, password } = req.body;
 
     const user = await UserModel.findOne({ email });
+    console.log(user);
     if (!user) return res.status(401).json({ message: "No valido" });
 
     const validPassword = isValidPassword(user, password);
+    console.log("Contraseña proporcionada:", password);
     if (!validPassword) return res.status(401).json({ message: "No valido" });
 
     const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
     expiresIn: JWT_EXPIRES
     });
 
-    res
-    .cookie("token", token, {
+    console.log("Token generado:", token);
+
+    res.cookie("token", token, {
         httpOnly: true,
         secure: false,
         sameSite: "strict",
         maxAge: 24 * 60 * 60 * 1000
     })
-    .json({ message: "Inicio de sesion exitosa :D" });
+
+    res.redirect("/profile");
+
+
+    
 } catch (err) {
     res.status(500).json({ message: "Error interno", error: err.message });
 }
 };
 
 export const currentUser = (req, res) => {
-if (!req.user) {
+    if (!req.user) {
     return res.status(401).json({ message: "No autorizado" });
-}
-
-const { first_name, last_name, email, age, role } = req.user;
-
-res.json({
-    user: {
-    first_name,
-    last_name,
-    email,
-    age,
-    role
     }
-});
+
+    const safeUser = new UserDTO(req.user);
+    res.json({ user: safeUser });
 };

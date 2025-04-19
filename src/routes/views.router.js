@@ -1,5 +1,6 @@
 import { Router } from "express";
 import fetch from "node-fetch";
+import passport from "passport";
 
 const router = Router();
 
@@ -43,4 +44,9 @@ try {
 }
 });
 
+router.get("/profile", passport.authenticate("jwt", { session: false }), (req, res) => {
+    res.render("ticket", { user: req.user }); // Asegurate de tener la vista `ticket.handlebars`
+});
+
 export default router;
+

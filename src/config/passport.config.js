@@ -1,16 +1,19 @@
-import passport from 'passport';
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
-import UserModel from '../models/user.model.js';
-import { cookieExtractor } from '../utils/cookieExtractor.js';
+import passport from "passport";
+import { Strategy as JwtStrategy, ExtractJwt } from "passport-jwt";
+import UserModel from "../models/users.model.js";
+import dotenv from "dotenv";
+import { cookieExtractor } from "../utils/cookieExtractor.js";
 
-const JWT_SECRET = 'secretJWT123';
+dotenv.config(); 
+
+const JWT_SECRET = process.env.JWT_SECRET;
 
 const jwtOptions = {
 jwtFromRequest: ExtractJwt.fromExtractors([cookieExtractor]),
 secretOrKey: JWT_SECRET
 };
 
-passport.use('jwt', new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
+passport.use("jwt", new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
 try {
     const user = await UserModel.findById(jwt_payload.id);
     if (!user) return done(null, false);
@@ -20,7 +23,7 @@ try {
 }
 }));
 
-passport.use('current', new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
+passport.use("current", new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
 try {
     const user = await UserModel.findById(jwt_payload.id);
     if (!user) return done(null, false);
@@ -29,7 +32,3 @@ try {
     return done(error, false);
 }
 }));
-
-export const initializePassport = () => {
-passport.initialize();
-};

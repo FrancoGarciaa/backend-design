@@ -1,0 +1,33 @@
+{{#if user}}
+<p>Bienvenido</p>
+{{/if}}
+
+<h2>Resumen de Compra</h2>
+
+{{#if ticket}}
+<div>
+    <h3>Ticket generado</h3>
+    <p><strong>Código:</strong> {{ticket.code}}</p>
+    <p><strong>Fecha:</strong> {{ticket.purchase_datetime}}</p>
+    <p><strong>Total pagado:</strong> ${{ticket.amount}}</p>
+    <p><strong>Comprador:</strong> {{ticket.purchaser}}</p>
+</div>
+{{else}}
+<p>No se generó ningún ticket.</p>
+{{/if}}
+
+<hr>
+
+<h3>Productos sin stock suficiente:</h3>
+{{#if productos_fallidos.length}}
+<ul>
+    {{#each productos_fallidos}}
+    <li>Producto ID: {{this}}</li>
+    {{/each}}
+</ul>
+    <p>Estos productos siguen en tu carrito.</p>
+{{else}}
+    <p>Todos los productos se compraron con éxito </p>
+{{/if}}
+
+<a href="/products">Volver a la tienda</a>

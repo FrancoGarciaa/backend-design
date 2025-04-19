@@ -6,14 +6,15 @@ import dotenv from "dotenv";
 import path from "path";
 import { engine } from "express-handlebars";
 import { fileURLToPath } from "url";
-import { initializePassport } from "./config/passport.config.js";
 import sessionsRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/views.router.js";
+import "./config/passport.config.js";
 
 dotenv.config(); 
 
+
 const app = express();
-const PORT = process.env.PORT || 8081;
+const PORT = process.env.PORT;
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -26,8 +27,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
-initializePassport();
 
 
 app.use(passport.initialize());
