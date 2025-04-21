@@ -15,6 +15,7 @@ secretOrKey: JWT_SECRET
 
 passport.use("jwt", new JwtStrategy(jwtOptions, async (jwt_payload, done) => {
 try {
+    console.log("JWT payload recibido:", jwt_payload); 
     const user = await UserModel.findById(jwt_payload.id);
     if (!user) return done(null, false);
     return done(null, user);

@@ -9,6 +9,8 @@ import { fileURLToPath } from "url";
 import sessionsRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/views.router.js";
 import "./config/passport.config.js";
+import Handlebars from "handlebars";
+
 
 dotenv.config(); 
 
@@ -20,6 +22,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 app.engine("handlebars", engine());
+Handlebars.registerHelper("multiply", (a, b) => a * b);
+Handlebars.registerHelper("calculateTotal", (products) => {
+let total = 0;
+products.forEach(p => { total += p.product.price * p.quantity; });
+return total;})
 app.set("view engine", "handlebars");
 app.set("views", path.resolve(__dirname, "views"));
 

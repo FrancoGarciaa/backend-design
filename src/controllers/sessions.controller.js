@@ -49,9 +49,12 @@ try {
     console.log("Contraseña proporcionada:", password);
     if (!validPassword) return res.status(401).json({ message: "No valido" });
 
-    const token = jwt.sign({ id: user._id, role: user.role }, JWT_SECRET, {
-    expiresIn: JWT_EXPIRES
+    const safeUser = new UserDTO(user);
+    
+    const token = jwt.sign(safeUser, JWT_SECRET, {
+        expiresIn: JWT_EXPIRES
     });
+    
 
     console.log("Token generado:", token);
 
@@ -62,7 +65,7 @@ try {
         maxAge: 24 * 60 * 60 * 1000
     })
 
-    res.redirect("/profile");
+    res.redirect("/home");
 
 
     
