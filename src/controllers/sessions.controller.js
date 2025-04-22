@@ -3,6 +3,7 @@ import UserModel from "../models/users.model.js";
 import { isValidPassword } from "../utils/bcrypt.js";
 import UserDTO from "../dao/dto/user.dto.js";
 import dotenv from "dotenv";
+import CartModel from "../models/cart.model.js";
 
 
 dotenv.config();
@@ -20,12 +21,15 @@ export const registerUser = async (req, res) => {
     const exist = await UserModel.findOne({ email });
     if (exist) return res.status(400).json({ message: "El usuario ya existe" });
 
+    const newCart = await CartModel.create({ products: [] });
+
     const newUser = new UserModel({
         first_name,
         last_name,
         email,
         age,
-        password
+        password,
+        cart: newCart._id
     });
 
     await newUser.save();
@@ -51,7 +55,7 @@ try {
 
     const safeUser = new UserDTO(user);
     
-    const token = jwt.sign(safeUser, JWT_SECRET, {
+    const token = jwt.sign({ ...safeUser }, JWT_SECRET, {
         expiresIn: JWT_EXPIRES
     });
     

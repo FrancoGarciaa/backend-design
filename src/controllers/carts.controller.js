@@ -1,4 +1,5 @@
 import CartService from "../services/cart.service.js";
+import { sendMail } from "../utils/mailer.js";
 
 export const purchaseCart = async (req, res) => {
   try {
@@ -6,12 +7,22 @@ export const purchaseCart = async (req, res) => {
     const userEmail = req.user.email;
 
     const result = await CartService.purchase(cid, userEmail);
+    const { ticket, outOfStockProducts } = result;
 
-    res.json({
-      message: "Compra procesada",
-      ticket: result.ticket,
-      productos_fallidos: result.outOfStockProducts
+    await sendMail({
+      to: userEmail,
+      subject: '¡Gracias por tu compra!',
+      html: `
+        <h2>Compra confirmada</h2>
+        <p><strong>Código del ticket:</strong> ${ticket.code}</p>
+        <p><strong>Fecha:</strong> ${ticket.purchase_datetime}</p>
+        <p><strong>Total:</strong> $${ticket.amount}</p>
+        <p>Gracias por comprar en nuestra tienda de celulares.</p>
+      `
     });
+
+    res.redirect(`/tickets?tid=${ticket._id}`);
+    
   } catch (error) {
     res.status(500).json({
       error: "Error al procesar la compra",

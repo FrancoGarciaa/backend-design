@@ -3,6 +3,7 @@ import fetch from "node-fetch";
 import passport from "passport";
 import ProductRepository from '../repository/product.repository.js';
 import TicketDAO from "../dao/models/ticket.dao.js";
+import UserDTO from "../dao/models/user.dao.js";
 
 const router = Router();
 
@@ -58,13 +59,24 @@ router.get("/cart", passport.authenticate("jwt", { session: false }), async (req
 
 router.get("/home", passport.authenticate("jwt", { session: false }), async (req, res) => {
     const products = await ProductRepository.getAll();
-    res.render("home", { user: req.user, products });
+    const safeUser = new UserDTO(req.user);
+
+    res.render("home", {
+        user: { ...safeUser },
+        products
+    });
 });
 
 router.get("/tickets", passport.authenticate("jwt", { session: false }), async (req, res) => {
-    const ticket = await TicketDAO.getByUserEmail(req.user.email);
-    const productos_fallidos = req.query.fallidos ? JSON.parse(req.query.fallidos) : [];
-    res.render("ticket", { user: req.user, ticket, productos_fallidos });
+    try {
+        const tid = req.query.tid;
+        const ticket = await TicketDAO.getById(tid);
+        const productos_fallidos = req.query.fallidos ? JSON.parse(req.query.fallidos) : [];
+
+        res.render("ticket", { user: req.user, ticket, productos_fallidos });
+    } catch (error) {
+        res.status(500).send("Error al cargar el ticket");
+    }
 });
 
 export default router;
