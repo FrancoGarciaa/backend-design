@@ -46,7 +46,7 @@ app.use("/api/sessions", sessionsRouter);
 const connectDB = async () => {
     try {
         await mongoose.connect(process.env.MONGO_URI, {
-            dbName: "test", // 👈🏻 asegurás que lea SOLO los productos reales
+            dbName: "test",
         });
     console.log("MongoDB conectado correctamente");
     app.listen(PORT, () => {

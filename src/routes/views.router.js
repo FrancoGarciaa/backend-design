@@ -4,6 +4,7 @@ import passport from "passport";
 import ProductRepository from '../repository/product.repository.js';
 import TicketDAO from "../dao/models/ticket.dao.js";
 import UserDTO from "../dao/models/user.dao.js";
+import CartRepository from "../repository/cart.repository.js";
 
 const router = Router();
 

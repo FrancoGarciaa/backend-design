@@ -10,11 +10,9 @@
     <li>
         <strong>{{this.name}}</strong> - ${{this.price}} - Stock: {{this.stock}}
         {{#if ../user.cart}}
-        <form action="/api/carts/{{../user.cart}}/products/{{this._id}}" method="POST" >
-            <button id="button2" type="submit">Agregar al carrito</button>
-        </form>
+        <button class="add-to-cart" id="button2" data-pid="{{this._id}}" data-cid="{{../user.cart}}">Agregar al carrito</button>
         {{else}}
-        <p style="color:red;">No se encontró el carrito del usuario.</p>
+        <p>No se encontró el carrito del usuario.</p>
         {{/if}}
     </li>
     {{/each}}
@@ -22,3 +20,5 @@
 
 <a href="/cart">Ir al carrito</a>
 </div>
+
+<script src="/index.js"></script>
