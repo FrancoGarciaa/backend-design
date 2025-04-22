@@ -10,6 +10,7 @@ import sessionsRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/views.router.js";
 import "./config/passport.config.js";
 import Handlebars from "handlebars";
+import cartsRouter from "./routes/carts.router.js";
 
 
 dotenv.config(); 
@@ -39,11 +40,14 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(passport.initialize());
 
 app.use("/", viewsRouter);
+app.use('/api/carts', cartsRouter);
 app.use("/api/sessions", sessionsRouter);
 
 const connectDB = async () => {
     try {
-    await mongoose.connect(process.env.MONGO_URI);
+        await mongoose.connect(process.env.MONGO_URI, {
+            dbName: "test", // 👈🏻 asegurás que lea SOLO los productos reales
+        });
     console.log("MongoDB conectado correctamente");
     app.listen(PORT, () => {
         console.log(`Server corriendo en http://localhost:${PORT}`);

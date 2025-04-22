@@ -1,9 +1,10 @@
 import ProductModel from "../../models/product.model.js"; 
 
+console.log("🧪 Nombre de la colección usada:", ProductModel.collection.name);
 class ProductDAO {
-async getAll() {
-    return await ProductModel.find().lean();
-}
+    async getAll() {
+        return await ProductModel.find().lean();
+    }
 
 async getById(id) {
     return await ProductModel.findById(id).lean();

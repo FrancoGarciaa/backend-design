@@ -1,4 +1,3 @@
-// services/cart.service.js
 import CartRepository from '../repository/cart.repository.js';
 import ProductRepository from '../repository/product.repository.js';
 import TicketModel from '../models/ticket.model.js';
@@ -31,8 +30,7 @@ static async purchase(cartId, userEmail) {
     amount: totalAmount,
     purchaser: userEmail,
     });
-
-    // Limpiar del carrito los productos que sí se compraron
+    
     cart.products = cart.products.filter(item =>
     productsOutOfStock.some(p => p.product.equals(item.product))
     );
@@ -43,6 +41,27 @@ static async purchase(cartId, userEmail) {
     outOfStockProducts: productsOutOfStock,
     };
 }
+    static async addProductToCart(cartId, productId) {
+        const cart = await CartRepository.getCartById(cartId);
+        if (!cart) throw new Error('Carrito no encontrado');
+
+        const product = await ProductRepository.getById(productId);
+        if (!product) throw new Error('Producto no encontrado');
+
+        const existingProductIndex = cart.products.findIndex(item => item.product._id.toString() === productId);
+
+        if (existingProductIndex !== -1) {
+            cart.products[existingProductIndex].quantity += 1;
+        } else {
+            cart.products.push({ product: productId, quantity: 1 });
+        }
+
+        await CartRepository.update(cart._id, { products: cart.products });
+
+        return cart;
+    }
 }
+
+
 
 export default CartService;

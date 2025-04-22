@@ -18,7 +18,7 @@ async deleteCart(id) {
 }
 
 async getCartByUserId(userId) {
-    return await cartModel.findOne({ user: userId }).populate("products.product");
+    return await CartDAO.getByUserId(userId);
 }
 
 }

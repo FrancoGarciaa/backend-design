@@ -30,3 +30,15 @@ export const purchaseCart = async (req, res) => {
     });
   }
 };
+
+export const addProductToCart = async (req, res) => {
+  const { cid, pid } = req.params;
+
+  try {
+    await CartService.addProduct(cid, pid);
+    res.redirect("/home");
+  } catch (error) {
+    console.error("Error al agregar producto al carrito:", error);
+    res.status(500).send("Error al agregar producto al carrito");
+  }
+};

@@ -14,7 +14,6 @@ const JWT_EXPIRES = process.env.JWT_EXPIRES;
 export const registerUser = async (req, res) => {
     try {
 
-        console.log("usuraio registrado: ", req.body);
 
     const { first_name, last_name, email, age, password } = req.body;
 

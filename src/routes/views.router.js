@@ -62,7 +62,7 @@ router.get("/home", passport.authenticate("jwt", { session: false }), async (req
     const safeUser = new UserDTO(req.user);
 
     res.render("home", {
-        user: { ...safeUser },
+        user: { ...safeUser, cart: req.user.cart.toString() },
         products
     });
 });

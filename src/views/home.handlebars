@@ -1,14 +1,24 @@
-<h2>Bienvenido</h2>
+<link rel="stylesheet" href="/css/style.css">
+<div class="container">
+    <h2>Bienvenido</h2>
 <h3>Productos disponibles</h3>
+
+<p>Cart ID: {{user.cart}}</p>
+
 <ul>
     {{#each products}}
     <li>
-        <strong>{{this.title}}</strong> - ${{this.price}} - Stock: {{this.stock}}
-        <form action="/api/carts/{{../user.cart}}/products/{{this._id}}" method="POST">
-            <button type="submit">Agregar al carrito</button>
+        <strong>{{this.name}}</strong> - ${{this.price}} - Stock: {{this.stock}}
+        {{#if ../user.cart}}
+        <form action="/api/carts/{{../user.cart}}/products/{{this._id}}" method="POST" >
+            <button id="button2" type="submit">Agregar al carrito</button>
         </form>
+        {{else}}
+        <p style="color:red;">No se encontró el carrito del usuario.</p>
+        {{/if}}
     </li>
     {{/each}}
 </ul>
 
 <a href="/cart">Ir al carrito</a>
+</div>
