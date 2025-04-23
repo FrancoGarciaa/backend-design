@@ -5,6 +5,7 @@ import ProductRepository from '../repository/product.repository.js';
 import TicketDAO from "../dao/models/ticket.dao.js";
 import UserDTO from "../dao/models/user.dao.js";
 import CartRepository from "../repository/cart.repository.js";
+import CartModel from "../models/cart.model.js";
 
 const router = Router();
 
@@ -49,12 +50,20 @@ try {
 }
 });
 
-router.get("/cart", passport.authenticate("jwt", { session: false }), async (req, res) => {
+router.get("/cart", passport.authenticate('jwt', { session: false }), async (req, res) => {
     try {
-        const cart = await CartRepository.getByUserId(req.user._id);
-        res.render("cart", { user: req.user, cart });
+        if (!req.user) {
+            return res.status(401).json({ message: "No autorizado" });
+        }
+        const userCart = await CartModel.findById(req.user.cart).populate("products.product");
+
+        if (!userCart) {
+            return res.status(404).json({ message: "Carrito no encontrado" });
+        }
+        res.render("cart", { cart: userCart });
     } catch (err) {
-        res.status(500).send("Error al cargar el carrito");
+        console.error("Error al cargar el carrito:", err);
+        res.status(500).json({ message: "Error al cargar el carrito", error: err.message });
     }
 });
 

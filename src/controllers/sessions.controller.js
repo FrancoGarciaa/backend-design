@@ -13,25 +13,26 @@ const JWT_EXPIRES = process.env.JWT_EXPIRES;
 
 export const registerUser = async (req, res) => {
     try {
-
-
     const { first_name, last_name, email, age, password } = req.body;
 
     const exist = await UserModel.findOne({ email });
     if (exist) return res.status(400).json({ message: "El usuario ya existe" });
-
-    const newCart = await CartModel.create({ products: [] });
 
     const newUser = new UserModel({
         first_name,
         last_name,
         email,
         age,
-        password,
-        cart: newCart._id
+        password
     });
 
     await newUser.save();
+
+    const newCart = await CartModel.create({ user: newUser._id, products: [] });
+
+
+    newUser.cart = newCart._id;
+    await newUser.save(); 
 
     res.status(201).json({ message: "Registro exitoso :D" });
     } catch (err) {
@@ -52,6 +53,7 @@ try {
     console.log("Contraseña proporcionada:", password);
     if (!validPassword) return res.status(401).json({ message: "No valido" });
 
+    
     const safeUser = new UserDTO(user);
     
     const token = jwt.sign({ ...safeUser }, JWT_SECRET, {
