@@ -35,10 +35,10 @@ export const addProductToCart = async (req, res) => {
   const { cid, pid } = req.params;
 
   try {
-    await CartService.addProduct(cid, pid);
-    res.redirect("/home");
+    await CartService.addProductToCart(cid, pid);
+    res.status(200).json({ message: "Producto agregado al carrito" });
   } catch (error) {
-    console.error("Error al agregar producto al carrito:", error);
-    res.status(500).send("Error al agregar producto al carrito");
+    console.error("Error al agregar el producto al carrito", error);
+    res.status(500).json({ message: "Error al agregar el producto al carrito" });
   }
 };

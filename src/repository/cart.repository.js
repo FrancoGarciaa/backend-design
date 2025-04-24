@@ -5,7 +5,7 @@ async getCartById(id) {
     return await CartDAO.getById(id);
 }
 
-async updateCart(id, data) {
+async update(id, data) {
     return await CartDAO.update(id, data);
 }
 

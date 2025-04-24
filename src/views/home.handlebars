@@ -1,4 +1,7 @@
 <link rel="stylesheet" href="/css/style.css">
+
+<body data-cart="{{cartId}}">
+
 <div class="container">
     <h2>Bienvenido</h2>
 <h3>Productos disponibles</h3>
@@ -10,7 +13,7 @@
     <li>
         <strong>{{this.name}}</strong> - ${{this.price}} - Stock: {{this.stock}}
         {{#if ../user.cart}}
-        <button class="add-to-cart" id="button2" data-pid="{{this._id}}" data-cid="{{../user.cart}}">Agregar al carrito</button>
+        <button class="add-to-cart" data-pid="{{this._id}}" data-cid="{{../user.cart}}">Agregar al carrito</button>
         {{else}}
         <p>No se encontró el carrito del usuario.</p>
         {{/if}}
@@ -20,5 +23,6 @@
 
 <a href="/cart">Ir al carrito</a>
 </div>
+</body>
 
 <script src="/js/index.js"></script>

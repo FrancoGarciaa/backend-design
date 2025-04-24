@@ -1,4 +1,4 @@
-<body data-cart="{{cart._id}}">
+<body data-cart="{{cartId}}">
 <h1>Carrito de</h1>
 
 {{#if cart.products.length}}
@@ -15,10 +15,13 @@
     <tbody>
     {{#each cart.products}}
     <tr>
-        <td>{{this.product.title}}</td>
-        <td>${{this.product.price}}</td>
+        <!-- Verificación condicional de si existe el producto y su título -->
+        <td>{{#if this.product}}{{this.product.title}}{{else}}Producto no disponible{{/if}}</td>
+        <!-- Verificación condicional de si existe el precio del producto -->
+        <td>${{#if this.product.price}}{{this.product.price}}{{else}}0{{/if}}</td>
         <td>{{this.quantity}}</td>
-        <td>${{multiply this.quantity this.product.price}}</td>
+        <!-- Verificación condicional para el cálculo del subtotal -->
+        <td>${{#if this.product.price}}{{multiply this.quantity this.product.price}}{{else}}0{{/if}}</td>
         <td>
         <button class="btn-decrease" data-id="{{this.product._id}}">-</button>
         <button class="btn-increase" data-id="{{this.product._id}}">+</button>

@@ -1,7 +1,7 @@
-import nodemailer from 'nodemailer';
+import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
-service: 'gmail',
+service: "gmail",
 auth: {
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS
@@ -16,9 +16,9 @@ try {
     subject,
     html
     });
-    console.log('Correo enviado:', info.messageId);
+    console.log("Correo enviado:", info.messageId);
 } catch (error) {
-    console.error('Error al enviar el correo:', error);
+    console.error("Error al enviar el correo:", error);
 }
 };
 

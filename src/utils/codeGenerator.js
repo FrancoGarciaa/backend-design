@@ -1,6 +1,5 @@
-// utils/codeGenerator.js
-import { randomBytes } from 'crypto';
+import { randomBytes } from "crypto";
 
 export const generateUniqueCode = async () => {
-return 'TCK-' + randomBytes(4).toString('hex').toUpperCase();
+return "TCK-" + randomBytes(4).toString("hex").toUpperCase();
 };

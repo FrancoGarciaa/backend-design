@@ -5,7 +5,9 @@ class ProductDAO {
     }
 
 async getById(id) {
-    return await ProductModel.findById(id).lean();
+    const product = await ProductModel.findById(id);
+    if (!product) console.warn("Producto no encontrado en la base de datos:", id);
+    return product;
 }
 
 async create(productData) {
@@ -19,6 +21,9 @@ async update(id, updateData) {
 async delete(id) {
     return await ProductModel.findByIdAndDelete(id);
 }
+
+
+
 }
 
 export default new ProductDAO();

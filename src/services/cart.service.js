@@ -1,12 +1,12 @@
-import CartRepository from '../repository/cart.repository.js';
-import ProductRepository from '../repository/product.repository.js';
-import TicketModel from '../models/ticket.model.js';
-import { generateUniqueCode } from '../utils/codeGenerator.js';
+import CartRepository from "../repository/cart.repository.js";
+import ProductRepository from "../repository/product.repository.js";
+import TicketModel from "../models/ticket.model.js";
+import { generateUniqueCode } from "../utils/codeGenerator.js";
 
 class CartService {
 static async purchase(cartId, userEmail) {
     const cart = await CartRepository.getCartById(cartId);
-    if (!cart) throw new Error('Carrito no encontrado');
+    if (!cart) throw new Error("Carrito no encontrado");
 
     const productsToBuy = [];
     const productsOutOfStock = [];
@@ -41,25 +41,41 @@ static async purchase(cartId, userEmail) {
     outOfStockProducts: productsOutOfStock,
     };
 }
-    static async addProductToCart(cartId, productId) {
-        const cart = await CartRepository.getCartById(cartId);
-        if (!cart) throw new Error('Carrito no encontrado');
 
-        const product = await ProductRepository.getById(productId);
-        if (!product) throw new Error('Producto no encontrado');
+static async addProductToCart(cartId, productId) {
 
-        const existingProductIndex = cart.products.findIndex(item => item.product._id.toString() === productId);
+    const cart = await CartRepository.getCartById(cartId);
+    if (!cart) {
+        throw new Error("Carrito no encontrado");
+    }
 
-        if (existingProductIndex !== -1) {
-            cart.products[existingProductIndex].quantity += 1;
-        } else {
-            cart.products.push({ product: productId, quantity: 1 });
+
+    const product = await ProductRepository.getById(productId);
+    if (!product) {
+        console.error("Producto no encontrado con ID:", productId);
+        throw new Error("Producto no encontrado");
+    }
+
+
+    const existingProductIndex = cart.products.findIndex(item => {
+        if (!item.product) {
+            console.error("Producto nulo encontrado en el carrito:", item);
+            return false; 
         }
 
-        await CartRepository.update(cart._id, { products: cart.products });
+        const itemId = item.product._id.toString();
+        return itemId === productId.toString();
+    });
 
-        return cart;
+    if (existingProductIndex !== -1) {
+        cart.products[existingProductIndex].quantity += 1;
+    } else {
+        cart.products.push({ product: productId, quantity: 1 });
     }
+    await CartRepository.update(cart._id, { products: cart.products });
+
+    return cart;
+}
 }
 
 
