@@ -11,6 +11,7 @@ import viewsRouter from "./routes/views.router.js";
 import "./config/passport.config.js";
 import cartsRouter from "./routes/carts.router.js";
 import cors from "cors";
+import handlebars from "express-handlebars"
 
 dotenv.config(); 
 
@@ -20,8 +21,25 @@ const PORT = process.env.PORT;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+const hbs = handlebars.create({
+    runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true,
+    },
+    helpers: {
+      multiply: (a, b) => a * b,
+    calculateTotal: (products) => {
+        if (!Array.isArray(products)) return 0;
+        return products.reduce((total, item) => {
+        const price = item.product?.price || 0;
+        const quantity = item.quantity || 0;
+          return total + price * quantity;
+        }, 0);
+    }
+    }
+});
 
-app.engine("handlebars", engine());
+app.engine("handlebars", hbs.engine);
 app.set("view engine", "handlebars");
 app.set("views", path.resolve(__dirname, "views"));
 
@@ -39,6 +57,7 @@ app.use(passport.initialize());
 app.use("/", viewsRouter);
 app.use("/api/carts", cartsRouter);
 app.use("/api/sessions", sessionsRouter);
+
 
 const connectDB = async () => {
     try {

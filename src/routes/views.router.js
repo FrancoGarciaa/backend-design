@@ -5,6 +5,7 @@ import ProductRepository from "../repository/product.repository.js";
 import TicketDAO from "../dao/models/ticket.dao.js";
 import UserDTO from "../dao/models/user.dao.js";
 import CartModel from "../models/cart.model.js";
+import { Types } from "mongoose";
 
 const router = Router();
 
@@ -54,15 +55,16 @@ router.get("/cart", passport.authenticate("jwt", { session: false }), async (req
         if (!req.user) {
             return res.status(401).json({ message: "No autorizado" });
         }
-        const userCart = await CartModel.findById(req.user.cart).populate("products.product");
+        if (!Types.ObjectId.isValid(req.user.cart)) {
+            return res.status(400).json({ message: "ID de carrito inválido" });
+        }
+        const userCart = await CartModel.findById(req.user.cart)
+            .populate("products.product")
+            .lean();
         if (!userCart) {
             return res.status(404).json({ message: "Carrito no encontrado" });
         }
-        userCart.products.forEach(item => {
-            item.subtotal = item.product.price * item.quantity;
-        });
-        const totalAmount = userCart.products.reduce((total, item) => total + item.subtotal, 0); 
-        res.render("cart", { cart: userCart, totalAmount });
+        res.render("cart", { cart: userCart, cartId: req.user.cart });
     } catch (err) {
         console.error("Error al cargar el carrito:", err);
         res.status(500).json({ message: "Error al cargar el carrito", error: err.message });

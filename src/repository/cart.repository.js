@@ -1,15 +1,15 @@
-import CartDAO from '../dao/models/cart.dao.js';
+import CartDAO from "../dao/models/cart.dao.js";
 
 class CartRepository {
-async getCartById(id) {
-    return await CartDAO.getById(id);
-}
+    getCartById(id) {
+        return CartDAO.getById(id);
+    }
 
 async update(id, data) {
     return await CartDAO.update(id, data);
 }
 
-async createCart(data) {
+async create(data) {
     return await CartDAO.create(data);
 }
 
