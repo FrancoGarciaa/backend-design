@@ -4,7 +4,6 @@ import passport from "passport";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import path from "path";
-import { engine } from "express-handlebars";
 import { fileURLToPath } from "url";
 import sessionsRouter from "./routes/sessions.router.js";
 import viewsRouter from "./routes/views.router.js";

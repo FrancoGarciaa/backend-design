@@ -11,7 +11,7 @@ auth: {
 export const sendMail = async ({ to, subject, html }) => {
 try {
     const info = await transporter.sendMail({
-    from: `"Tienda de Celulares" <${process.env.EMAIL_USER}>`,
+    from: `"Tienda de informatica" <${process.env.EMAIL_USER}>`,
     to,
     subject,
     html
