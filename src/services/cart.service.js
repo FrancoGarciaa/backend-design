@@ -37,6 +37,10 @@ static async purchase(cartId, userEmail) {
     code: await generateUniqueCode(),
     amount: totalAmount,
     purchaser: userEmail,
+    products: productsToBuy.map(p => ({
+        name: p.product.name,
+        quantity: p.quantity
+    }))
     });
 
     cart.products = cart.products.filter((item) =>

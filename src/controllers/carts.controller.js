@@ -1,6 +1,5 @@
 import CartService from "../services/cart.service.js";
 import { sendMail } from "../utils/mailer.js";
-import { Types } from "mongoose";
 
 export const purchaseCart = async (req, res) => {
   try {
@@ -18,6 +17,10 @@ export const purchaseCart = async (req, res) => {
         <p><strong>Código del ticket:</strong> ${ticket.code}</p>
         <p><strong>Fecha:</strong> ${ticket.purchase_datetime}</p>
         <p><strong>Total:</strong> $${ticket.amount}</p>
+        <p><strong>Productos:</strong></p>
+          <ul>
+            ${ticket.products.map(p => `<li>${p.name} x${p.quantity}</li>`).join("")}
+          </ul>
         <p>Gracias por comprar en nuestra tienda de celulares.</p>
       `
     });
